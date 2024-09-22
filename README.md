@@ -27,10 +27,18 @@ sequenceDiagram
       deactivate Player
     end
     Note left of Player: API available in REST format:
-    alt Discards a card from the player's hand and adds it to the discard pile.
+    alt Discards a card from the player's hand.
       activate Player
         Player-->>First Level: POST /dicard-card/player/:player/card/:card
         Note right of Player: Validates the player and the card (HTTP 409).
+        First Level-->>First Level: Verify next player (let player).
+        First Level-->>Second Level: POST /next-player/current-player/:current-player/next-player/:next-player
+        Note right of First Level: Redis => "hash-next-player".
+        First Level-->>Second Level: POST /player-hand/card/:card
+        Note right of First Level: Redis => "hash-player-hand".
+        First Level-->>Second Level: POST /last-card/card/:card
+        Note right of First Level: Redis => "hash-last-card".
+        First Level-->>First Level: Verify if the player won.
         First Level->>Player: player
       deactivate Player
     end
