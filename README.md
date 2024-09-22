@@ -15,6 +15,8 @@ This level acts as the direct interface with user requests. Its responsibility i
 - Second level (Application State Management):
 The second level is responsible for managing and updating the application state. It encapsulates the core business logic and performs operations that alter the system's state, such as data manipulation. Functions in this level are designed to be self-sufficient and independent, being triggered by the first level as needed.
 
+![Architecture](architecture-1.svg)
+
 ```mermaid
 sequenceDiagram
     autonumber
