@@ -27,13 +27,13 @@ sequenceDiagram
 
     Note over p,sl: Pass the turn to the other player.
     p-->>+fl: POST /uno/player/refresh-token
-    fl->>-p: HTTP 200, Body token
+    fl->>-p: HTTP 200, Body token - Generated token.
     p-->>fl: POST /uno/player/pass-turn
     fl-->>+sl: POST /uno/next-turn
-    alt Invalid Play
-        sl->>p: HTTP 400
-    else Valid Play
-        sl->>-p: HTTP 200, Body cardId
+    alt
+        sl->>p: HTTP 400 - Invalid Play.
+    else 
+        sl->>-p: HTTP 200, Body cardId - Valid Play.
         Note right of fl: Redis "hash-last-card" 
     end
 ```
