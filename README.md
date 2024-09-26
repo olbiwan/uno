@@ -16,7 +16,7 @@ This level acts as a direct interface for user requests. Your responsibility is 
 The second level is responsible for managing and updating the state of the application. It encapsulates core logic and performs operations that change the state of the system.
 
 <p align="center">
-  <img src="architecture-1.svg" alt="Alt text">
+  <img src="architecture-1.drawio.svg" alt="Alt text">
 </p>
 
 ```mermaid
