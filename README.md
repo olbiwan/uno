@@ -26,12 +26,14 @@ sequenceDiagram
     participant sl as Second Service
 
     Note over p,sl: Pass the turn to the other player.
+    p-->>+fl: POST /uno/player/refresh-token
+    fl->>-p: HTTP 200, Body token
     p-->>fl: POST /uno/player/pass-turn
-    fl->>+sl: POST /uno/next-turn
+    fl-->>+sl: POST /uno/next-turn
     alt Invalid Play
         sl->>p: HTTP 400
     else Valid Play
         sl->>-p: HTTP 200, Body cardId
-        Note left of sl: Redis "hash-last-card" 
+        Note right of fl: Redis "hash-last-card" 
     end
 ```
