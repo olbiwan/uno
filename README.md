@@ -1,19 +1,19 @@
 # [Uno](https://en.wikipedia.org/wiki/Uno_(card_game))
 
-_This project was developed as part of the final course work for [PUCPR](https://www.pucpr.br). Inspired by the original [Space Invaders](https://jay-ithiel.github.io/space_invaders) idea built by the AWS team, the goal was to create an online version of the [**Uno**](https://en.wikipedia.org/wiki/Uno_(card_game)) game, with a special focus on minimizing costs and avoiding **Cloud Vendor Lock-In**._
+_This project was developed as part of the final work of the Postgraduate course at [PUCPR](https://www.pucpr.br). Inspired by the original idea of ​​[Space Invaders](https://jay-ithiel.github.io/space_invaders) developed by the AWS team, the objective is to create an online version of the game [**Uno** ](https://en.wikipedia.org/wiki/Uno_(card_game)), with a special focus on minimizing costs and avoiding **Cloud Vendor lock-in**._
 
-## ⚡️Run the project
+## Usage
 
-## 👨‍🎓 A little about the architecture
+## Architecture
 
-The architecture is based on Serverless, using [**Clojure**](https://clojure.org) for function development, with communication happening through HTTP calls. Depending on the platform, these functions are triggered via HTTP Trigger (in the case of [Azure Functions](https://azure.microsoft.com/en-us/products/functions)) or API Gateway (when using [AWS Lambda](https://aws.amazon.com/pt/pm/lambda)).
+The architecture is based on Serverless using [**Clojure**](https://clojure.org), with external communication through a REST API, and internal communication, depending on the platform, is triggered via HTTP Trigger (in this case from [Azure Functions](https://azure.microsoft.com/en-us/products/functions)) or API Gateway (when using [AWS Lambda](https://aws.amazon.com/pt/ pm/ lambda)).
 
-The architecture is organized into two main levels:
+Microservices are organized into two main levels:
 
 - First level (Interface and Orchestration):
-This level acts as the direct interface with user requests. Its responsibility is to orchestrate calls to services in the second level, integrating and composing the responses. It serves as the application’s entry point, handling external HTTP requests and coordinating interactions between different services.
+This level acts as a direct interface for user requests. Your responsibility is to orchestrate calls to second-level services, integrating and composing responses.
 - Second level (Application State Management):
-The second level is responsible for managing and updating the application state. It encapsulates the core business logic and performs operations that alter the system's state, such as data manipulation. Functions in this level are designed to be self-sufficient and independent, being triggered by the first level as needed.
+The second level is responsible for managing and updating the state of the application. It encapsulates core logic and performs operations that change the state of the system.
 
 <p align="center">
   <img src="architecture-1.svg" alt="Alt text">
