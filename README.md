@@ -21,39 +21,31 @@ The second level is responsible for managing and updating the state of the appli
 
 ```mermaid
 sequenceDiagram
-    autonumber
-    alt Logs in to the game.
-      activate Player
-        Player-->>First Level: POST /player/login
-        First Level->>Player: token
-      deactivate Player
-    end
-    Note left of Player: API available in REST format:
-    alt Scenario: Invalid card played.
-      activate Player
-        Player-->>First Level: POST /player/refresh-token
-        Player-->>First Level: POST /player/discard-card/:cardId
-        First Level-->>Second Level: DELETE /uno/player-hand/:cardId
-        Second Level->>First Level: Invalid card played (HTTP 409).
-        First Level->>Player: Invalid card played (HTTP 409).
-      deactivate Player
-    end
-    alt Draws a card from the deck and adds it to the player's hand.
-      activate Player
-        Player-->>First Level: POST /player/draw-card
-        First Level-->>Second Level: POST /uno/draw-card
-        Second Level->>First Level: cardId
-        First Level-->>Second Level: POST /uno/player-hand
-        First Level->>Player: cardId
-      deactivate Player
-    end
-    alt Passes the turn to the next player.
-      activate Player
-        Player-->>First Level: POST /player/pass-turn
-        First Level-->>Second Level: POST /uno/next-turn/:cardId
-        Note right of First Level: Redis => "hash-next-turn".
-        First Level->>Player: If there are more moves, return a list of the opponent's cards (HTTP 200).
-        First Level->>Player: Indicates if the opponent has won (HTTP 410).
-      deactivate Player
+    participant web as First Level
+    participant blog as Blog Service
+    participant account as Account Service
+    participant mail as Mail Service
+    participant db as Storage
+
+    Note over web,db: The user must be logged in to submit blog posts
+    web->>+account: Logs in using credentials
+    account->>db: Query stored accounts
+    db->>account: Respond with query result
+
+    alt Credentials not found
+        account->>web: Invalid credentials
+    else Credentials found
+        account->>-web: Successfully logged in
+
+        Note over web,db: When the user is authenticated, they can now submit new posts
+        web->>+blog: Submit new post
+        blog->>db: Store post data
+
+        par Notifications
+            blog--)mail: Send mail to blog subscribers
+            blog--)db: Store in-site notifications
+        and Response
+            blog-->>-web: Successfully posted
+        end
     end
 ```
