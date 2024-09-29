@@ -15,25 +15,24 @@ This level acts as a direct interface for user requests. Your responsibility is 
 - Second level (Application State Management):
 The second level is responsible for managing and updating the state of the application. It encapsulates core logic and performs operations that change the state of the system.
 
-<p align="center">
-  <img src="architecture-1.drawio.svg" alt="Alt text">
-</p>
-
 ```mermaid
-sequenceDiagram
-    participant p as Player
-    participant fl as First Level
-    participant sl as Second Service
-
-    Note over p,sl: Pass the turn to the other player.
-    p-->>+fl: POST /uno/player/refresh-token
-    fl->>-p: HTTP 200, Body token - Generated token.
-    p-->>fl: POST /uno/player/pass-turn
-    fl-->>+sl: POST /uno/next-turn
-    alt
-        sl->>p: HTTP 400 - Invalid Play.
-    else 
-        sl->>-p: HTTP 200, Body cardId - Valid Play.
-        Note right of fl: Redis "hash-last-card" 
-    end
+flowchart LR
+    SC -.->|Validates the informed card and updates the hand.| HPH[(Redis<br><b>hash-player-hand</b>)]
+    U((begin))
+    U -->|<b>POST</b> <i>/uno/open/player/discard-card/:card</i>| FA[Serverless<br><b>discard-card</b><br><i>Cloujure</i>]
+    U -->|<b>POST</b> <i>/uno/open/player/draw-card</i>| FB[Serverless<br><b>draw-card</b><br><i>Cloujure</i>]
+    U -->|<b>POST</b> <i>/uno/open/player/pass-turn</i>| FC[Serverless<br><b>pass-turn</b><br><i>Cloujure</i>]
+    FA --> SC(Serverless<br><b>player-hand</b><br><i>Cloujure</i>)
+    FC --> SA(Serverless<br><b>next-turn</b><br><i>Cloujure</i>)
+    FB --> SB(Serverless<br><b>pile-card</b><br><i>Cloujure</i>)
+    SA -.->|Updates the last card.| HNT[(Redis<br><b>hash-next-turn</b>)]
+    SA -.->|If there are no card.| SB
+    SA & SB -.->|Query/Update the hand.| SC
+    SC -.->|Check the opponent's move.| SA
+    classDef first color:#fff,fill:green;
+    classDef second color:#fff,fill:red;
+    style U  color:#fff,fill:#000,stroke:#000;
+    class FA,FB,FC first;
+    class SA,SB,SC second;
 ```
+- **next-turn**: *Validates the discarded card if any and returns the opponent's card.*
