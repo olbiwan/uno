@@ -19,9 +19,10 @@ The second level is responsible for managing and updating the state of the appli
 flowchart LR
     SC -.->|Validates the informed card and updates the hand.| HPH[(Redis<br><b>hash-player-hand</b>)]
     U((begin))
-    U -->|<b>POST</b> <i>/uno/open/player/discard-card/:card</i>| FA[Serverless<br><b>discard-card</b><br><i>Cloujure</i>]
-    U -->|<b>POST</b> <i>/uno/open/player/draw-card</i>| FB[Serverless<br><b>draw-card</b><br><i>Cloujure</i>]
-    U -->|<b>POST</b> <i>/uno/open/player/pass-turn</i>| FC[Serverless<br><b>pass-turn</b><br><i>Cloujure</i>]
+    U -->|<b>POST</b> <i>/uno/security/refresh-token</i>| Z[Serverless<br><b>security</b><br><i>Cloujure</i>]
+    U -->|<b>POST</b> <i>/uno/player/discard-card/:card</i>| FA[Serverless<br><b>discard-card</b><br><i>Cloujure</i>]
+    U -->|<b>POST</b> <i>/uno/player/draw-card</i>| FB[Serverless<br><b>draw-card</b><br><i>Cloujure</i>]
+    U -->|<b>POST</b> <i>/uno/player/pass-turn</i>| FC[Serverless<br><b>pass-turn</b><br><i>Cloujure</i>]
     FA --> SC(Serverless<br><b>player-hand</b><br><i>Cloujure</i>)
     FC --> SA(Serverless<br><b>next-turn</b><br><i>Cloujure</i>)
     FB --> SB(Serverless<br><b>pile-card</b><br><i>Cloujure</i>)
