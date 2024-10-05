@@ -6,7 +6,7 @@ _**This project was developed for the Postgraduate course at [PUCPR](https://www
 
 ## Architecture
 
-A arquitetura é baseada em um modelo serverless usando [**Clojure**](https://clojure.org), com comunicação externa feita por meio de uma API REST. A comunicação interna varia dependendo da plataforma: usa HTTP Triggers no caso do [Azure Functions](https://azure.microsoft.com/en-us/products/functions), ou API Gateway ao utilizar [AWS Lambda](https://aws.amazon.com/pt/pm/lambda).
+The architecture is based on a **serverless model** using [**Clojure**](https://clojure.org), with external communication handled via a `REST API`. Internal communication varies depending on the platform: it uses `HTTP Triggers` in the case of [Azure Functions](https://azure.microsoft.com/en-us/products/functions) or `API Gateway` when using [AWS Lambda](https://aws.amazon.com/lambda).
 
 **Microservices are organized into two main levels**:
 
