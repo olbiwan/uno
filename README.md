@@ -1,6 +1,6 @@
 # [Uno](https://en.wikipedia.org/wiki/Uno_(card_game))
 
-_**This project was developed for the Postgraduate course at [PUCPR](https://www.pucpr.br)**. Inspired by the original idea of ​​[Space Invaders](https://jay-ithiel.github.io/space_invaders) developed by the AWS team, the objective is to create an online version of the game [**Uno** ](https://en.wikipedia.org/wiki/Uno_(card_game)), with a special focus on minimizing costs and avoiding **Cloud Vendor lock-in**._
+_**This project was developed for the Postgraduate course at [PUCPR](https://www.pucpr.br)**. Inspired by the original idea of ​​[Space Invaders](https://jay-ithiel.github.io/space_invaders) developed by the AWS team, the objective is to create an online version of the game [**Uno**](https://en.wikipedia.org/wiki/Uno_(card_game)), with a special focus on minimizing costs and avoiding **Cloud Vendor lock-in**._
 
 ## Usage
 
@@ -18,39 +18,63 @@ The second level is responsible for managing the application state and encapsula
 ### Services Available
 
 <details>
-  <summary><code>POST</code> <code><b>/uno/player/draw-card</b></code> <i>(deal and draw cards from the pile)</i></summary>
+  <summary><code>POST</code> <code><b>/uno/player/discard-card/:card</b></code> <i>(discard the player's card)</i></summary>
 
 ```mermaid
 flowchart LR
-    U((begin)) -->|<b>POST</b> <i>/uno/security/refresh-token</i>| S[security]
+    U((begin)) --->|<b>POST</b> <i>/uno/security/refresh-token</i>| S[security-bff]
     S -.-> DS[(security)]
-    U -->|<b>POST</b> <i>/uno/player/draw-card</i>| DCB[<b>draw-card-bff</b>]
-    DCB --> SPC(pile-card)
-    SNT(dealer) -.->|Query/update the last card.| DLC[(last-card)]
-    SPC --> SPH(player)
-    SPC --> SNT
-    SNT -.->|Update the hand.| DOH[(opponent-hand)]
-    SPC -.->|Query/Update the pile.| DPC[(pile-card)]
-    SPH -.->|Update the hand.| DPH[(player-hand)]
-    style DCB color:#fff,fill:green;
-    style U color:#fff,fill:#000,stroke:#000;
+    U --->|<b>POST</b> <i>/uno/player/discard-card/:card</i>| DCB[<b>discard-card-bff</b>]
+    DCB --> SC(player)
+    SA(dealer) -.->|Validates the informed card and updates the last card.| DLC[(last-card)]
+    SA -.->|Query/Update the hand.| DOH[(opponent-hand)]
+    SB(pile-card)  -.->|Update the pile.| DPC[(pile-card)]
+    SC -.->|Validates the informed card and updates the hand.| DPH[(player-hand)]
+    SA -->|If there is no card.| SB
+    SC -->|Check the opponent's move.| SA    
+    style U  color:#fff,fill:#000,stroke:#000;
+    classDef bff color:#fff,fill:green;
+    class S,DCB bff;
     classDef second color:#fff,fill:red;
-    class SNT,SPC,SPH second;
+    class SA,SB,SC second;
 ```
+</details>
+
+<details>
+  <summary><code>POST</code> <code><b>/uno/player/draw-card</b></code> <i>(deal and draw cards from the pile)</i></summary>
 
 #### Parameters
 
-> | name          |  type              | data type    | description     |
-> |---------------|--------------------|--------------|-----------------|
-> | authorization | headers (required) | bearer token | Security token. |
+> | name          |  type              | data type      | description       |
+> |---------------|--------------------|----------------|-------------------|
+> | authorization | headers (required) | `bearer token` | *Security token.* |
 
 #### Responses
 
-> | http code | content-type       | response                                  |
-> |-----------|--------------------|-------------------------------------------|
-> | `200`     | `application/json` | Returns the player's cards and last card. |
-> | `401`     | `application/json` | Invalid authentication.                   |
-> | `409`     | `application/json` | Invalid play.                             |
+> | http code | content-type       | response                                    |
+> |-----------|--------------------|---------------------------------------------|
+> | `200`     | `application/json` | *Returns the player's cards and last card.* |
+> | `401`     | `application/json` | *Invalid authentication.*                   |
+> | `409`     | `application/json` | *Invalid play.*                             |
+
+```mermaid
+flowchart LR
+    U((begin)) --->|<b>POST</b> <i>/uno/security/refresh-token</i>| S[security-bff]
+    S -.-> DS[(security)]
+    U --->|<b>POST</b> <i>/uno/player/draw-card</i>| DCB[draw-card-bff]
+    DCB --> SPC(pile-card)
+    SD(dealer) -.->|Query/update the last card.| DLC[(last-card)]
+    SPC --> SP(player)
+    SPC --> SD
+    SD -.->|Update the hand.| DOH[(opponent-hand)]
+    SPC -.->|Query/Update the pile.| DPC[(pile-card)]
+    SP -.->|Update the hand.| DPH[(player-hand)]
+    style U color:#fff,fill:#000,stroke:#000;
+    classDef bff color:#fff,fill:green;
+    class S,DCB bff;
+    classDef second color:#fff,fill:red;
+    class SD,SP,SPC second;
+```
 
 #### Example cURL
 
@@ -62,38 +86,16 @@ flowchart LR
 </details>
 
 <details>
-  <summary><b>Discard the player's card.</b> <i>(click to see)</i></summary>
+  <summary><code>POST</code> <code><b>/uno/player/pass-turn</b></code> <i>(pass the turn to the opponent)</i></summary>
 
 ```mermaid
-flowchart TD
-    U((begin)) -->|<b>POST</b> <i>/uno/security/refresh-token</i>| Z[security]
-    U -->|<b>POST</b> <i>/uno/player/discard-card/:card</i>| FB[<b>discard-card-bff</b>]
-    FB --> SC(player-hand)
-    SA(next-turn) -.->|Validates the informed card and updates the last card.| HLC[(last-card)]
-    SA -.->|Query/Update the hand.| HOH[(opponent-hand)]
-    SB(pile-card)  -.->|Update the pile.| HPC[(pile-card)]
-    SC -.->|Validates the informed card and updates the hand.| HPH[(player-hand)]
-    SA -->|If there is no card.| SB
-    SC -->|Check the opponent's move.| SA
-    classDef first color:#fff,fill:green;
-    classDef second color:#fff,fill:red;
-    style U  color:#fff,fill:#000,stroke:#000;
-    class FB first;
-    class SA,SB,SC second;
-```
-</details>
-
-<details>
-  <summary><b>Pass the turn to the opponent.</b> <i>(click to see)</i></summary>
-
-```mermaid
-flowchart TD
-    U((begin)) -->|<b>POST</b> <i>/uno/security/refresh-token</i>| Z[security]
+flowchart LR
+    U((begin)) -->|<b>POST</b> <i>/uno/security/refresh-token</i>| S[security]
     U -->|<b>POST</b> <i>/uno/player/pass-turn</i>| FD[<b>pass-turn-bff</b>]
-    FD --> SA(next-turn)
-    SA -.->|Update the last card.| HLC[(last-card)]
-    SA -.->|Query/Update the hand.| HOH[(opponent-hand)]
-    SB(pile-card) -.->|Update the pile.| HPC[(pile-card)]
+    FD --> SA(dealer)
+    SA -.->|Update the last card.| DLC[(last-card)]
+    SA -.->|Query/Update the hand.| DOH[(opponent-hand)]
+    SB(pile-card) -.->|Update the pile.| DPC[(pile-card)]
     SA -.->|If there is no card.| SB
     classDef first color:#fff,fill:green;
     classDef second color:#fff,fill:red;
