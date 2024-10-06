@@ -23,15 +23,15 @@ The second level is responsible for managing the application state and encapsula
 ```mermaid
 flowchart LR
     U((begin)) -->|<b>POST</b> <i>/uno/security/refresh-token</i>| S[security]
+    S -.-> DS[(security)]
     U -->|<b>POST</b> <i>/uno/player/draw-card</i>| DCB[<b>draw-card-bff</b>]
-    DCB -->|Returns the player's cards and last card.| SPC(pile-card)
-    SNT(next-turn) -.->|Query/update the last card.| DLC[(last-card)]
-    SPC -->|Update the hand.| SPH(player-hand)
-    SPC -->|Update the hand.| SNT
+    DCB --> SPC(pile-card)
+    SNT(dealer) -.->|Query/update the last card.| DLC[(last-card)]
+    SPC --> SPH(player)
+    SPC --> SNT
     SNT -.->|Update the hand.| DOH[(opponent-hand)]
     SPC -.->|Query/Update the pile.| DPC[(pile-card)]
     SPH -.->|Update the hand.| DPH[(player-hand)]
-    S -.->|Update the hand.| DS[(security)]
     style DCB color:#fff,fill:green;
     style U color:#fff,fill:#000,stroke:#000;
     classDef second color:#fff,fill:red;
