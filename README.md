@@ -11,11 +11,13 @@ The architecture is based on a **serverless model** using [**Clojure**](https://
 **Microservices are organized into two main levels**:
 
 - **Back-end for Front-end (BFF)**:
-_This level acts as a direct interface for user requests. Your responsibility is to orchestrate calls to second-level services, integrating and composing responses._
+This level acts as a direct interface for user requests. Your responsibility is to orchestrate calls to second-level services, integrating and composing responses.
 - **Second level (Application State Management)**:
-_The second level is responsible for managing the application state and encapsulating the core logic._
+The second level is responsible for managing the application state and encapsulating the core logic.
 
 ### Services Available
+
+
 
 <details>
   <summary><b>Deliver cards and draw from the pile.</b> <i>(click to see)</i></summary>
@@ -67,12 +69,12 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    U((begin)) -->|<b>POST</b> <i>/uno/security/refresh-token</i>| Z[<b>security</b>]
+    U((begin)) -->|<b>POST</b> <i>/uno/security/refresh-token</i>| Z[security]
     U -->|<b>POST</b> <i>/uno/player/pass-turn</i>| FD[<b>pass-turn-bff</b>]
-    FD --> SA(<b>next-turn</b>)
-    SA -.->|Update the last card.| HLC[(<b>last-card</b>)]
-    SA -.->|Query/Update the hand.| HOH[(<b>opponent-hand</b>)]
-    SB(<b>pile-card</b>) -.->|Update the pile.| HPC[(<b>pile-card</b>)]
+    FD --> SA(next-turn)
+    SA -.->|Update the last card.| HLC[(last-card)]
+    SA -.->|Query/Update the hand.| HOH[(opponent-hand)]
+    SB(pile-card) -.->|Update the pile.| HPC[(pile-card)]
     SA -.->|If there is no card.| SB
     classDef first color:#fff,fill:green;
     classDef second color:#fff,fill:red;
@@ -84,6 +86,6 @@ flowchart TD
 </details>
 
 **Applications:**
-- **draw-card**: *Deal the cards and draw from the pile.*
+- **draw-card-bff**: *Deal the cards and draw from the pile.*
 - **next-turn**: *Validates the discarded card if any and returns the opponent's card.*
-- **refresh-token**: *Generates the security token.*
+- **security**: *Generates the security token.*
