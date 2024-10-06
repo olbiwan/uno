@@ -1,6 +1,7 @@
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?logo=terraform&logoColor=white)
 ![Clojure](https://img.shields.io/badge/Clojure-%23Clojure.svg?logo=Clojure)
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?logo=postman&logoColor=white)
+![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB)
 
 # [Uno](https://en.wikipedia.org/wiki/Uno_(card_game))
 
