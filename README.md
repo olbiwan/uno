@@ -17,27 +17,47 @@ The second level is responsible for managing the application state and encapsula
 
 ### Services Available
 
-
-
 <details>
-  <summary><b>Deliver cards and draw from the pile.</b> <i>(click to see)</i></summary>
+  <summary><code>POST</code> <code><b>/uno/player/draw-card</b></code> <i>(deal and draw cards from the pile)</i></summary>
 
 ```mermaid
-flowchart TD
+flowchart LR
     U((begin)) -->|<b>POST</b> <i>/uno/security/refresh-token</i>| S[security]
     U -->|<b>POST</b> <i>/uno/player/draw-card</i>| DCB[<b>draw-card-bff</b>]
     DCB -->|Returns the player's cards and last card.| SPC(pile-card)
-    SNT(next-turn) -.->|Query/update the last card.| HLC[(last-card)]
+    SNT(next-turn) -.->|Query/update the last card.| DLC[(last-card)]
     SPC -->|Update the hand.| SPH(player-hand)
     SPC -->|Update the hand.| SNT
-    SNT -.->|Update the hand.| HOH[(opponent-hand)]
-    SPC -.->|Query/Update the pile.| HPC[(pile-card)]
-    SPH -.->|Update the hand.| HPH[(player-hand)]
+    SNT -.->|Update the hand.| DOH[(opponent-hand)]
+    SPC -.->|Query/Update the pile.| DPC[(pile-card)]
+    SPH -.->|Update the hand.| DPH[(player-hand)]
+    S -.->|Update the hand.| DS[(security)]
     style DCB color:#fff,fill:green;
     style U color:#fff,fill:#000,stroke:#000;
     classDef second color:#fff,fill:red;
     class SNT,SPC,SPH second;
 ```
+
+#### Parameters
+
+> | name          |  type              | data type    | description     |
+> |---------------|--------------------|--------------|-----------------|
+> | authorization | headers (required) | bearer token | Security token. |
+
+#### Responses
+
+> | http code | content-type       | response                                  |
+> |-----------|--------------------|-------------------------------------------|
+> | `200`     | `application/json` | Returns the player's cards and last card. |
+> | `401`     | `application/json` | Invalid authentication.                   |
+> | `409`     | `application/json` | Invalid play.                             |
+
+#### Example cURL
+
+> ```javascript
+>  curl --request POST '{{uno}}/uno/player/draw-card' \
+>  --header 'Authorization: {{authorization}}'
+> ```
 
 </details>
 
@@ -61,7 +81,6 @@ flowchart TD
     class FB first;
     class SA,SB,SC second;
 ```
-
 </details>
 
 <details>
@@ -82,10 +101,4 @@ flowchart TD
     class FB,FC,FD first;
     class SA,SB,SC second;
 ```
-
 </details>
-
-**Applications:**
-- **draw-card-bff**: *Deal the cards and draw from the pile.*
-- **next-turn**: *Validates the discarded card if any and returns the opponent's card.*
-- **security**: *Generates the security token.*
