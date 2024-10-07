@@ -5,7 +5,7 @@
 
 # [Uno](https://en.wikipedia.org/wiki/Uno_(card_game))
 
-_**This project was developed for the Postgraduate course at [PUCPR](https://www.pucpr.br)**. Inspired by the original idea of ​​[Space Invaders](https://jay-ithiel.github.io/space_invaders) developed by the AWS team, the objective is to create an online version of the game [**Uno**](https://en.wikipedia.org/wiki/Uno_(card_game)), with a special focus on minimizing costs and avoiding **Cloud Vendor lock-in**._
+_**This project was developed for the Postgraduate course at [PUCPR](https://www.pucpr.br)**. Inspired by the original idea of ​​[Space Invaders](https://jay-ithiel.github.io/space_invaders) developed by the AWS team, the objective is to create an online version of the game [**Uno**](https://en.wikipedia.org/wiki/Uno_(card_game)), with a special focus on minimizing costs and avoiding **Cloud Vendor lock-In**._
 
 ## Usage
 
@@ -50,17 +50,17 @@ flowchart LR
 
 #### Parameters
 
-> | name          |  type              | data type      | description       |
-> |---------------|--------------------|----------------|-------------------|
-> | authorization | headers (required) | `bearer token` | *Security token.* |
+> | Name          |  Type  | Description       |
+> |---------------|--------|-------------------|
+> | Authorization | Header | *Security token.* |
 
 #### Responses
 
-> | http code | content-type       | response                                    |
-> |-----------|--------------------|---------------------------------------------|
-> | `200`     | `application/json` | *Returns the player's cards and last card.* |
-> | `401`     | `application/json` | *Invalid authentication.*                   |
-> | `409`     | `application/json` | *Invalid play.*                             |
+> | HTTP Code | Description                                 |
+> |-----------|---------------------------------------------|
+> | `200`     | *Returns the player's cards and last card.* |
+> | `401`     | *Invalid authentication.*                   |
+> | `409`     | *Invalid play.*                             |
 
 ```mermaid
 flowchart LR
@@ -95,8 +95,8 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    U((begin)) -->|<b>POST</b> <i>/uno/security/refresh-token</i>| S[security]
-    U -->|<b>POST</b> <i>/uno/player/pass-turn</i>| FD[<b>pass-turn-bff</b>]
+    U((begin)) --->|<b>POST</b> <i>/uno/security/refresh-token</i>| S[security]
+    U --->|<b>POST</b> <i>/uno/player/pass-turn</i>| FD[<b>pass-turn-bff</b>]
     FD --> SA(dealer)
     SA -.->|Update the last card.| DLC[(last-card)]
     SA -.->|Query/Update the hand.| DOH[(opponent-hand)]
