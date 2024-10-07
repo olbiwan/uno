@@ -63,12 +63,12 @@ flowchart LR
 > | `409`     | *Invalid play.*                             |
 
 ```mermaid
-flowchart LR
+flowchart TD
     U((begin)) --->|<b>POST</b> <i>/uno/security/refresh-token</i>| S[security-bff]
     S -.-> DS[(security)]
     U --->|<b>POST</b> <i>/uno/player/draw-card</i>| DCB[draw-card-bff]
     DCB --> SPC(pile-card)
-    SD(dealer) -.->|Query/update the last card.| DLC[(last-card)]
+    SD(dealer) -.->|Query/Update the last card.| DLC[(last-card)]
     SPC --> SP(player)
     SPC --> SD
     SD -.->|Update the hand.| DOH[(opponent-hand)]
